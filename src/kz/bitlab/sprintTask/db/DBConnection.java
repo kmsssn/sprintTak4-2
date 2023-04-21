@@ -37,25 +37,6 @@ public class DBConnection {
         }
         return items;
     }
-    public static boolean checkLogin(String email, String password){
-        boolean result=false;
-        try{
-            PreparedStatement statement=connection.prepareStatement(
-                    "SELECT * FROM users WHERE email=? AND password=?"
-            );
-            statement.setString(1, email);
-            statement.setString(2, password);
-            ResultSet resultSet=statement.executeQuery();
-            if(resultSet.next()){
-                result=true;
-            }
-            resultSet.close();
-            statement.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return result;
-    }
     public static Users getUser(Long id){
         Users user=null;
         try{
@@ -73,5 +54,28 @@ public class DBConnection {
             e.printStackTrace();
         }
         return user;
+    }
+    public static ArrayList<Users> getUsers(){
+
+        ArrayList<Users> users = new ArrayList<>();
+        Users user=null;
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                user.setId(resultSet.getLong("id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setFullName(resultSet.getString("full_name"));
+                users.add(user);
+            }
+            statement.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return users;
     }
 }
