@@ -32,7 +32,27 @@ public class Items {
     }
 
     public String getDescription() {
-        return description;
+        String newDescription=null;
+        try {
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/sprinttask4-2",
+                    "root",
+                    "root");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT REPLACE(description, '\\n', '<br>') " +
+                            "AS newDescription FROM items");
+            while (resultSet.next()) {
+                newDescription = resultSet.getString("newDescription");
+            }
+
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newDescription;
     }
 
     public void setDescription(String description) {
